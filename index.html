@@ -123,7 +123,27 @@ function intro(){
   st=fresh();st.name=v;st.ph=ph;st.t0=Date.now();save();exam()};
  $("#ph").oninput=e=>{const el=e.target,c=el.value.replace(/[٠-٩]/g,d=>AD.indexOf(d)).replace(/\D/g,"");if(c!==el.value)el.value=c;el.classList.toggle("bad",c.length>=12&&!normPh(c));el.classList.toggle("good",!!normPh(c))};
  $("#nm").onkeydown=$("#ph").onkeydown=e=>{if(e.key==="Enter")$("#go").click()};
- $("#tc").onclick=()=>teacher();
+ $("#tc").onclick=()=>teacherGate();
+}
+function teacherGate(){
+ const ov=document.createElement("div");
+ ov.setAttribute("style","position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px");
+ ov.innerHTML='<div dir="rtl" style="background:#fffdf5;border-radius:18px;padding:22px;width:100%;max-width:340px;box-shadow:0 10px 40px rgba(0,0,0,.25);font-family:inherit;text-align:center">'+
+ '<div style="font-weight:800;font-size:18px;color:#0b5d47;margin-bottom:6px">لوحة المعلم</div>'+
+ '<div style="font-size:14px;color:#555;margin-bottom:14px">أدخل كلمة المرور للدخول</div>'+
+ '<input id="tpw" type="password" inputmode="numeric" autocomplete="off" style="width:100%;box-sizing:border-box;padding:12px;border:1px solid #ccc;border-radius:12px;font-size:18px;text-align:center;font-family:inherit">'+
+ '<div id="tpe" style="color:#c0392b;font-size:13px;min-height:20px;margin-top:8px"></div>'+
+ '<div style="display:flex;gap:10px;margin-top:6px"><button id="tpo" style="flex:1;padding:11px;border:0;border-radius:12px;background:#0b5d47;color:#fff;font-weight:700;font-size:15px;cursor:pointer;font-family:inherit">دخول</button>'+
+ '<button id="tpc" style="flex:1;padding:11px;border:1px solid #ccc;border-radius:12px;background:#fff;color:#333;font-size:15px;cursor:pointer;font-family:inherit">إلغاء</button></div></div>';
+ document.body.appendChild(ov);
+ const inp=ov.querySelector("#tpw"),err=ov.querySelector("#tpe");
+ const close=()=>ov.remove();
+ const ok=()=>{if(inp.value.trim()==="007"){close();teacher();}else{err.textContent="كلمة المرور غير صحيحة";inp.value="";inp.focus();}};
+ ov.querySelector("#tpo").onclick=ok;
+ ov.querySelector("#tpc").onclick=close;
+ ov.onclick=e=>{if(e.target===ov)close()};
+ inp.onkeydown=e=>{if(e.key==="Enter")ok();else if(e.key==="Escape")close()};
+ setTimeout(()=>inp.focus(),50);
 }
 function exam(conf){
  const P=st.ord.length,qi=st.ord[st.cur],q=QS[qi],done=st.ord.filter(j=>st.ans[j]!=="-").length,un=P-done,C=2*Math.PI*26;
